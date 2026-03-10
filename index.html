@@ -194,7 +194,7 @@ fetch(sheetURL)
 const filas=data.split("\n").slice(1);
 
 filas.forEach(f=>{
-const c=f.split(",").map(x=>x.replace(/"/g,"").trim());
+const c = f.split(",").map(x => x.replace(/"/g, "").trim());
 
 if(c[0]==serie && c[1]==fecha){
 
