@@ -194,7 +194,7 @@ fetch(sheetURL)
 const filas=data.split("\n").slice(1);
 
 filas.forEach(f=>{
-const c=f.split(",");
+const c=f.split(",").map(x=>x.replace(/"/g,"").trim());
 
 if(c[0]==serie && c[1]==fecha){
 
@@ -204,9 +204,6 @@ document.getElementById("dni").innerText=c[4];
 document.getElementById("solicitante").innerText=c[5];
 
 }
-
-});
-
 });
 
 </script>
