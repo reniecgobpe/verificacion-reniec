@@ -194,9 +194,6 @@ fetch(sheetURL)
 const filas=data.split("\n").slice(1);
 
 filas.forEach(f=>{
-const filas=data.split("\n").slice(1);
-
-filas.forEach(f=>{
 
 const c = f.split(";").map(x => x.replace(/"/g,"").trim());
 
@@ -211,7 +208,6 @@ document.getElementById("solicitante").innerText=c[5];
 
 });
 
-</script>
+});
 
-</body>
-</html>
+</script>
