@@ -198,7 +198,24 @@ body {
   vertical-align: middle;
 }
 
-/* ── RESPONSIVE MÓVIL ── */
+@media (max-width: 600px) {
+  .flatpickr-calendar {
+    width: 95vw !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    position: fixed !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 9999 !important;
+  }
+  .flatpickr-day {
+    height: 38px;
+    line-height: 38px;
+    max-width: 38px;
+    font-size: 14px;
+  }
+  .fp-day-number { font-size: 50px !important; }
+}
 @media (max-width: 600px) {
 
   /* Header: logos centrados, Bienvenido debajo */
@@ -552,6 +569,7 @@ function buildCalendarUI(fp, date) {
 flatpickr("#fecha-emision", {
   dateFormat: "d/m/Y",
   locale: "es",
+  disableMobile: true,
   onReady(dates, str, fp)  { buildCalendarUI(fp, dates[0]); },
   onChange(dates, str, fp) { buildCalendarUI(fp, dates[0]); },
   onMonthChange(dates, str, fp) {
