@@ -212,42 +212,136 @@ body {
   background: #fff;
   border-radius: 4px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+  width: 280px !important;
+  font-family: Arial, sans-serif;
 }
 
-.flatpickr-current-month { display: none !important; }
-.flatpickr-weekdaycontainer { display: none !important; }
-
-.flatpickr-custom-header {
-  background-color: #00897b;
+/* Custom top bar: day name */
+.fp-day-name-bar {
+  background: #00796b;
   color: #fff;
   text-align: center;
-  padding: 5px 0;
-  text-transform: uppercase;
-  font-size: 0.8em;
-  border-radius: 4px 4px 0 0;
+  padding: 8px 0;
+  font-size: 13px;
+  text-transform: capitalize;
+  letter-spacing: 0.5px;
 }
 
-.flatpickr-date-display {
-  background-color: #009688;
+/* Custom date display: Month / big number / year */
+.fp-date-display {
+  background: #009688;
   color: #fff;
+  text-align: center;
+  padding: 16px 0 20px;
+}
+.fp-date-display .fp-month-label {
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+.fp-date-display .fp-day-number {
+  font-size: 60px;
+  font-weight: 300;
+  line-height: 1;
+  margin: 0;
+}
+.fp-date-display .fp-year-label {
+  font-size: 16px;
+  margin-top: 6px;
+  opacity: 0.85;
+}
+
+/* Navigation row */
+.flatpickr-months {
+  background: #fff;
+  padding: 8px 6px 4px;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  padding: 20px 0;
+}
+.flatpickr-month { background: #fff !important; }
+.flatpickr-current-month {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 14px;
+  color: #333;
+  padding: 0;
+  width: 100%;
+}
+.flatpickr-current-month select {
+  font-size: 13px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  padding: 2px 4px;
+  color: #333;
+  background: #fff;
+}
+.flatpickr-prev-month, .flatpickr-next-month {
+  color: #555 !important;
+  fill: #555 !important;
+  padding: 4px 8px !important;
+}
+.flatpickr-prev-month:hover, .flatpickr-next-month:hover {
+  color: #009688 !important;
+  fill: #009688 !important;
+  background: none !important;
 }
 
-.flatpickr-days { padding: 10px; }
-
-.flatpickr-calendar .flatpickr-day.selected {
-  background-color: #009688;
-  border-color: #009688;
+/* Weekday headers */
+.flatpickr-weekdaycontainer { display: flex !important; }
+.flatpickr-weekday {
+  font-size: 12px;
+  color: #777 !important;
+  background: #fff !important;
+  font-weight: 600;
 }
 
+/* Days */
+.flatpickr-days { padding: 4px 8px 0; }
+.flatpickr-day {
+  font-size: 13px;
+  border-radius: 50% !important;
+  height: 34px;
+  line-height: 34px;
+  max-width: 34px;
+  color: #333;
+}
+.flatpickr-calendar .flatpickr-day.selected,
+.flatpickr-calendar .flatpickr-day.selected:hover {
+  background: #009688 !important;
+  border-color: #009688 !important;
+  color: #fff !important;
+}
 .flatpickr-calendar .flatpickr-day.today {
-  border-color: #009688;
-  color: #009688;
+  border-color: #009688 !important;
+  color: #009688 !important;
 }
+.flatpickr-calendar .flatpickr-day:hover {
+  background: #e0f2f1 !important;
+}
+
+/* Footer buttons */
+.fp-footer {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 8px 12px;
+  border-top: 1px solid #eee;
+}
+.fp-footer button {
+  background: none;
+  border: none;
+  color: #009688;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 4px 8px;
+}
+.fp-footer button:hover { background: #e0f2f1; border-radius: 3px; }
 
 </style>
 </head>
@@ -353,7 +447,63 @@ body {
 
 <script>
 
-flatpickr("#fecha-emision", { dateFormat: "d/m/Y", locale: "es" });
+const DIAS   = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+const MESES  = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+function buildCalendarUI(fp, date) {
+  const cal = fp.calendarContainer;
+
+  // --- Day-name bar ---
+  let bar = cal.querySelector('.fp-day-name-bar');
+  if (!bar) {
+    bar = document.createElement('div');
+    bar.className = 'fp-day-name-bar';
+    cal.insertBefore(bar, cal.firstChild);
+  }
+
+  // --- Date display ---
+  let disp = cal.querySelector('.fp-date-display');
+  if (!disp) {
+    disp = document.createElement('div');
+    disp.className = 'fp-date-display';
+    disp.innerHTML = `<div class="fp-month-label"></div>
+                      <div class="fp-day-number"></div>
+                      <div class="fp-year-label"></div>`;
+    cal.insertBefore(disp, bar.nextSibling);
+  }
+
+  // --- Footer ---
+  let foot = cal.querySelector('.fp-footer');
+  if (!foot) {
+    foot = document.createElement('div');
+    foot.className = 'fp-footer';
+    foot.innerHTML = `<button class="fp-hoy">HOY</button>
+                      <button class="fp-limpiar">LIMPIAR</button>
+                      <button class="fp-cerrar">CERRAR</button>`;
+    cal.appendChild(foot);
+    foot.querySelector('.fp-hoy').addEventListener('click', () => { fp.setDate(new Date()); });
+    foot.querySelector('.fp-limpiar').addEventListener('click', () => { fp.clear(); });
+    foot.querySelector('.fp-cerrar').addEventListener('click', () => { fp.close(); });
+  }
+
+  // Update values
+  const d = date || fp.selectedDates[0] || new Date();
+  bar.textContent = DIAS[d.getDay()];
+  disp.querySelector('.fp-month-label').textContent = MESES[d.getMonth()].toUpperCase();
+  disp.querySelector('.fp-day-number').textContent  = d.getDate();
+  disp.querySelector('.fp-year-label').textContent  = d.getFullYear();
+}
+
+flatpickr("#fecha-emision", {
+  dateFormat: "d/m/Y",
+  locale: "es",
+  onReady(dates, str, fp)  { buildCalendarUI(fp, dates[0]); },
+  onChange(dates, str, fp) { buildCalendarUI(fp, dates[0]); },
+  onMonthChange(dates, str, fp) {
+    const d = new Date(fp.currentYear, fp.currentMonth, 1);
+    buildCalendarUI(fp, fp.selectedDates[0] || d);
+  }
+});
 
 const sheetURL = "https://docs.google.com/spreadsheets/d/1QkUEKjfgUR6JGK-cibphy8A0Uv9SpNZZoeydX9cjCdY/gviz/tq?tqx=out:csv";
 
