@@ -218,33 +218,31 @@ body {
 }
 @media (max-width: 600px) {
 
-  /* Header: logos centrados, Bienvenido debajo */
+  /* Header: ocultar Bienvenido en móvil, logos en fila */
   .header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-    padding: 10px 16px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 8px 12px;
+    gap: 4px;
   }
-  .header-welcome {
-    position: static;
-    align-self: flex-end;
-    margin-top: -28px;
-  }
+  .header-welcome { display: none; }
 
-  /* Navbar */
-  .navbar { padding: 10px 16px; font-size: 14px; }
-
-  /* Main padding */
-  .main-content { padding: 20px 10px; }
+  /* Main: reducir padding superior */
+  .main-content { padding: 12px 8px; }
 
   /* Wrapper title */
   .main-content > div > div:first-child {
     font-size: 18px !important;
-    padding: 20px 10px 12px !important;
+    padding: 14px 10px 10px !important;
   }
 
-  /* Card */
-  .card-body { padding: 20px 16px 10px; }
+  /* HR separador */
+  .main-content > div > hr {
+    margin: 0 0 12px 0 !important;
+  }
+
+  /* Card body menos padding arriba */
+  .card-body { padding: 16px 14px 10px; }
 
   /* Inputs: stack vertically */
   .inputs-row {
